@@ -2,15 +2,20 @@
 
 namespace bluefox2 {
 
-Bluefox2Ros::Bluefox2Ros(const ros::NodeHandle& nh, const std::string& prefix)
+Bluefox2Ros::Bluefox2Ros(const ros::NodeHandle& nh, const std::string& prefix, const std::string& mode)
     : CameraRosBase(nh, prefix), bluefox2_(identifier()) {
   //  bluefox2_.OpenDevice();
   SetHardwareId(bluefox2_.serial());
 
   // Some hack for getting hardware sync to work
   ros::NodeHandle cnh(nh, prefix);
-  std::string mode;
-  cnh.param<std::string>("mode", mode, "");
+
+  // cs: from constructor now
+  // std::string mode;
+  /*
+  if (!mode.length())
+    cnh.param<std::string>("mode", mode, "");
+  */
 
   if (mode == "master") {
     bluefox2_.SetMaster();

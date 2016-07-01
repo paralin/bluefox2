@@ -15,7 +15,7 @@ class StereoNode : public camera_base::CameraNodeBase<Bluefox2DynConfig> {
   virtual void Acquire() override;
   virtual void Setup(Bluefox2DynConfig &config) override;
 
-  void AcquireOnce();
+  void AcquireOnce(bool always = false);
 
  private:
   boost::shared_ptr<Bluefox2Ros> left_ros_;

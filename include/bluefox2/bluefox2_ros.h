@@ -9,7 +9,8 @@ namespace bluefox2 {
 class Bluefox2Ros : public camera_base::CameraRosBase {
  public:
   explicit Bluefox2Ros(const ros::NodeHandle& nh,
-                       const std::string& prefix = std::string());
+                       const std::string& prefix = std::string(),
+                       const std::string& mode = std::string());
 
   void RequestSingle() const { bluefox2_.RequestSingle(); }
   Bluefox2& camera() { return bluefox2_; }

@@ -4,25 +4,21 @@
 namespace bluefox2 {
 
 StereoNode::StereoNode(const ros::NodeHandle &pnh)
-    : CameraNodeBase(pnh),
-      left_ros_(boost::make_shared<Bluefox2Ros>(pnh, "left")),
-      right_ros_(boost::make_shared<Bluefox2Ros>(pnh, "right")) {}
+    : CameraNodeBase(pnh)
+{
+  this->left_ros_ = boost::make_shared<Bluefox2Ros>(pnh, "left", "master");
+  this->right_ros_ = boost::make_shared<Bluefox2Ros>(pnh, "right", "slave");
+}
 
 void StereoNode::Acquire() {
   while (is_acquire() && ros::ok()) {
-    left_ros_->RequestSingle();
-    right_ros_->RequestSingle();
-    const auto expose_us = left_ros_->camera().GetExposeUs();
-    const auto expose_duration = ros::Duration(expose_us * 1e-6 / 2);
-    const auto time = ros::Time::now() + expose_duration;
-    left_ros_->PublishCamera(time);
-    right_ros_->PublishCamera(time);
+    StereoNode::AcquireOnce(true);
     Sleep();
   }
 }
 
-void StereoNode::AcquireOnce() {
-  if (is_acquire() && ros::ok()) {
+void StereoNode::AcquireOnce(bool always) {
+  if (always || (is_acquire() && ros::ok())) {
     left_ros_->RequestSingle();
     right_ros_->RequestSingle();
     const auto expose_us = left_ros_->camera().GetExposeUs();
